@@ -3,344 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMASH KARTS WATER PARK FFA - EXTREME EDITION</title>
+<title>SMASH KARTS CLONE - WATER PARK FFA</title>
 <style>
-/* CSS RESET AND BASE VARIABLES */
+/* ==========================================================================
+   CSS RESET & VARIABLES
+   ========================================================================== */
 :root {
-    --primary-color: #ff4500;
-    --secondary-color: #0088ff;
-    --text-color: #ffffff;
-    --bg-color: #87CEEB;
-    --hud-bg: rgba(0, 0, 0, 0.6);
-    --hud-border: #ffffff;
-    --font-main: 'Impact', 'Arial Black', sans-serif;
-    --danger-color: #ff0000;
-    --safe-color: #00ff00;
+    --primary: #0088ff;
+    --secondary: #ff4400;
+    --bg-blue: #87CEEB;
+    --ui-white: #ffffff;
+    --ui-text: #333333;
+    --danger: #ff0000;
+    --font: 'Arial Black', Impact, sans-serif;
 }
-
 body, html {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-color);
-    font-family: var(--font-main);
+    background-color: var(--bg-blue);
+    font-family: var(--font);
     user-select: none;
     -webkit-user-select: none;
 }
-
-/* GAME CANVAS */
+/* ==========================================================================
+   CANVAS LAYER
+   ========================================================================== */
 #gameCanvas {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: block;
+    width: 100%;
+    height: 100%;
     z-index: 1;
+    display: block;
 }
-
-/* UI LAYER */
+/* ==========================================================================
+   UI LAYER (MATCHING PROVIDED IMAGE)
+   ========================================================================== */
 #uiLayer {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 10;
     display: none;
 }
-
-/* TIMER DISPLAY */
-#timerContainer {
+/* TOP HUD BARS */
+#topHud {
     position: absolute;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--hud-bg);
-    border: 3px solid var(--hud-border);
-    border-radius: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 150px;
+}
+.hud-pill {
+    background: var(--ui-white);
+    border: 4px solid var(--primary);
+    border-radius: 50px;
     padding: 10px 30px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     display: flex;
-    flex-direction: column;
     align-items: center;
-}
-
-#timerLabel {
-    color: var(--secondary-color);
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-#timerValue {
-    color: var(--text-color);
-    font-size: 48px;
-    text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-}
-
-#timerValue.warning {
-    color: var(--danger-color);
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* PLAYER STATS (HEALTH & SCORE) */
-#playerStatsContainer {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.stat-box {
-    background: var(--hud-bg);
-    border: 2px solid var(--hud-border);
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
     min-width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    position: relative;
 }
-
-.stat-label {
-    color: #aaaaaa;
-    font-size: 14px;
-    margin-bottom: 5px;
+/* HEALTH UI */
+#healthIcon {
+    position: absolute;
+    left: -20px;
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 4px solid var(--primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: var(--danger);
+    z-index: 2;
 }
-
-/* HEALTH BAR */
 #healthBarContainer {
     width: 100%;
-    height: 25px;
-    background: #333;
-    border-radius: 12px;
+    height: 20px;
+    background: #eee;
+    border-radius: 10px;
+    margin-left: 20px;
     overflow: hidden;
-    border: 2px solid #555;
 }
-
 #healthBarFill {
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, #ff0000, #00ff00);
-    transition: width 0.2s ease-out;
+    background: #00aaff;
+    transition: width 0.2s;
 }
-
-#healthText {
+/* TIMER UI */
+#timerIcon {
     position: absolute;
+    left: -20px;
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 4px solid var(--primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: var(--primary);
+    z-index: 2;
+}
+#timerValue {
     width: 100%;
     text-align: center;
-    line-height: 25px;
-    color: white;
-    font-size: 16px;
-    text-shadow: 1px 1px 2px black;
+    font-size: 28px;
+    color: var(--primary);
+    margin-left: 20px;
 }
-
-/* SCORE */
-#scoreValue {
-    color: gold;
-    font-size: 32px;
-    text-shadow: 2px 2px 0 #000;
-}
-
-/* WEAPON UI */
-#weaponContainer {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: var(--hud-bg);
-    border: 4px solid var(--hud-border);
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 150px;
-    box-shadow: 0 0 15px rgba(255,255,255,0.2);
-    transition: border-color 0.3s;
-}
-
-#weaponIcon {
-    width: 80px;
-    height: 80px;
-    background: #444;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 40px;
-    border: 3px solid #666;
-}
-
-#weaponName {
-    color: white;
-    font-size: 20px;
-    margin-bottom: 5px;
-    text-align: center;
-}
-
-#ammoContainer {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 150px;
-}
-
-.ammo-pip {
-    width: 15px;
-    height: 15px;
-    background: #888;
-    border-radius: 50%;
-    border: 1px solid #000;
-}
-
-.ammo-pip.filled {
-    background: gold;
-    box-shadow: 0 0 5px gold;
-}
-
-/* CROSSHAIR */
+/* CROSSHAIR & WEAPON */
 #crosshair {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     width: 40px;
     height: 40px;
-    pointer-events: none;
-}
-
-.crosshair-line {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.8);
-}
-
-.crosshair-line.vertical {
-    top: 0; left: 19px; width: 2px; height: 40px;
-}
-
-.crosshair-line.horizontal {
-    top: 19px; left: 0; width: 40px; height: 2px;
-}
-
-.crosshair-center {
-    position: absolute;
-    top: 18px; left: 18px; width: 4px; height: 4px;
-    background: red;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,0,0,0.8) 10%, transparent 15%);
+    border: 2px solid rgba(255,255,255,0.5);
     border-radius: 50%;
 }
-
-/* KILLFEED */
+/* LEADERBOARD / NOTIFICATIONS */
 #killfeed {
     position: absolute;
     top: 100px;
     right: 20px;
-    width: 300px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     align-items: flex-end;
 }
-
-.killfeed-entry {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 8px 15px;
-    border-radius: 5px;
-    color: white;
-    font-size: 14px;
-    animation: slideInRight 0.3s forwards, fadeOut 0.5s 3.5s forwards;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-left: 4px solid var(--primary-color);
-}
-
-.killer-name { color: #00ff00; font-weight: bold; }
-.victim-name { color: #ff0000; font-weight: bold; }
-.weapon-used { color: #ffff00; font-style: italic; }
-
-@keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; visibility: hidden; }
-}
-
-/* LEADERBOARD (TAB) */
-#leaderboard {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
-    border: 5px solid #444;
-    border-radius: 20px;
-    padding: 30px;
-    width: 600px;
-    display: none;
-    flex-direction: column;
-    z-index: 50;
-    box-shadow: 0 0 50px rgba(0,0,0,1);
-}
-
-#leaderboard h2 {
-    color: white;
-    text-align: center;
-    font-size: 36px;
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #666;
-    padding-bottom: 10px;
-}
-
-.leaderboard-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    border-bottom: 1px solid #333;
-    color: white;
-    font-size: 20px;
-}
-
-.leaderboard-row.header {
-    font-weight: bold;
-    color: #aaa;
-    border-bottom: 2px solid #666;
-}
-
-.leaderboard-row.player-row {
-    background: rgba(0, 255, 0, 0.2);
-    font-weight: bold;
-}
-
-.lb-rank { width: 10%; text-align: center; }
-.lb-name { width: 50%; }
-.lb-kills { width: 20%; text-align: center; color: #ff4444; }
-.lb-deaths { width: 20%; text-align: center; color: #888; }
-
-/* START / END SCREENS */
-.overlay-screen {
+/* ==========================================================================
+   MAIN MENU & NAME INPUT
+   ========================================================================== */
+#mainMenu {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: radial-gradient(circle, rgba(0,100,200,0.9) 0%, rgba(0,20,50,0.95) 100%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #00aaff 0%, #0055ff 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -348,671 +165,489 @@ body, html {
     z-index: 100;
     pointer-events: auto;
 }
-
-.title-text {
+.logo-container {
+    margin-bottom: 40px;
+    text-align: center;
+}
+.logo-text {
     font-size: 80px;
     color: white;
-    text-transform: uppercase;
-    text-shadow: 0px 10px 0px #000, 0px 10px 20px rgba(0,0,0,0.5);
-    margin-bottom: 10px;
-    text-align: center;
+    text-shadow: 4px 4px 0px #000, 8px 8px 0px rgba(0,0,0,0.3);
+    transform: skew(-5deg);
+    line-height: 1;
 }
-
-.subtitle-text {
+.logo-sub {
     font-size: 30px;
     color: #ffff00;
-    margin-bottom: 50px;
-    text-shadow: 2px 2px 4px #000;
-    letter-spacing: 5px;
+    text-shadow: 2px 2px 0px #000;
+    letter-spacing: 2px;
 }
-
-.play-btn {
-    background: linear-gradient(180deg, #ff6a00 0%, #cc3700 100%);
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.2);
+    padding: 40px;
+    border-radius: 20px;
+    border: 4px solid white;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+#playerNameInput {
+    font-family: var(--font);
+    font-size: 32px;
+    padding: 15px 20px;
+    border: 4px solid var(--primary);
+    border-radius: 15px;
+    text-align: center;
+    width: 300px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    outline: none;
+}
+#playerNameInput:focus {
+    border-color: #ffff00;
+}
+#playBtn {
+    background: #ff4400;
     color: white;
-    font-family: var(--font-main);
+    font-family: var(--font);
     font-size: 40px;
-    padding: 20px 80px;
-    border: 5px solid #fff;
+    padding: 20px 60px;
+    border: 6px solid white;
     border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 10px 0 #882500, 0 15px 20px rgba(0,0,0,0.5);
-    transition: all 0.1s ease;
+    box-shadow: 0 10px 0 #cc3300;
+    transition: all 0.1s;
     text-transform: uppercase;
 }
-
-.play-btn:hover {
-    background: linear-gradient(180deg, #ff8c33 0%, #e64200 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 0 #882500, 0 18px 25px rgba(0,0,0,0.5);
+#playBtn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 0 #cc3300;
 }
-
-.play-btn:active {
+#playBtn:active {
     transform: translateY(10px);
-    box-shadow: 0 0px 0 #882500, 0 5px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 #cc3300;
 }
-
-.instructions {
-    margin-top: 40px;
-    background: rgba(0,0,0,0.5);
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
-    text-align: center;
-}
-
-.key {
-    background: #eee;
-    color: #000;
-    padding: 2px 8px;
-    border-radius: 4px;
-    border-bottom: 3px solid #ccc;
-    font-weight: bold;
-}
-
-#endScreen { display: none; }
 </style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
-
 </head>
 <body>
 
 <div id="gameCanvas"></div>
 
 <div id="uiLayer">
-    <div id="timerContainer">
-        <div id="timerLabel">TIME REMAINING</div>
-        <div id="timerValue">03:00</div>
-    </div>
-    
-    <div id="crosshair">
-        <div class="crosshair-line vertical"></div>
-        <div class="crosshair-line horizontal"></div>
-        <div class="crosshair-center"></div>
-    </div>
-    
-    <div id="playerStatsContainer">
-        <div class="stat-box">
-            <div class="stat-label">HULL INTEGRITY</div>
+    <div id="topHud">
+        <div class="hud-pill">
+            <div id="healthIcon">❤</div>
             <div id="healthBarContainer">
-                <div id="healthText">100 / 100</div>
                 <div id="healthBarFill"></div>
             </div>
         </div>
-        <div class="stat-box">
-            <div class="stat-label">ELIMINATIONS</div>
-            <div id="scoreValue">0</div>
+        <div class="hud-pill">
+            <div id="timerIcon">⏱</div>
+            <div id="timerValue">03:00</div>
         </div>
     </div>
-    
-    <div id="weaponContainer">
-        <div id="weaponIcon">?</div>
-        <div id="weaponName">NO WEAPON</div>
-        <div id="ammoContainer" id="ammoContainerDiv">
-            </div>
-    </div>
-    
+    <div id="crosshair"></div>
     <div id="killfeed"></div>
-    
-    <div id="leaderboard">
-        <h2>MATCH STANDINGS</h2>
-        <div class="leaderboard-row header">
-            <div class="lb-rank">#</div>
-            <div class="lb-name">KART</div>
-            <div class="lb-kills">KILLS</div>
-            <div class="lb-deaths">DEATHS</div>
-        </div>
-        <div id="leaderboardBody">
-            </div>
-    </div>
 </div>
 
-<div id="startScreen" class="overlay-screen">
-    <div class="title-text">WATER PARK FFA</div>
-    <div class="subtitle-text">ONLY ONE RULE: SURVIVE</div>
-    <button class="play-btn" id="startBtn">ENTER ARENA</button>
-    <div class="instructions">
-        <p>Controls:</p>
-        <p><span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span> or <span class="key">ARROWS</span> to Drive</p>
-        <p><span class="key">SPACE</span> to Fire Weapon</p>
-        <p><span class="key">TAB</span> to view Leaderboard</p>
-        <p>Drive over <span style="color:yellow; font-weight:bold;">WEAPON BOXES</span> to arm yourself!</p>
+<div id="mainMenu">
+    <div class="logo-container">
+        <div class="logo-text">WATER KARTS</div>
+        <div class="logo-sub">FREE FOR ALL ARENA</div>
     </div>
-</div>
-
-<div id="endScreen" class="overlay-screen">
-    <div class="title-text" id="endTitle">MATCH OVER</div>
-    <div class="subtitle-text" id="endSubtitle">CALCULATING RESULTS...</div>
-    <div id="finalScoreboard" style="width:600px; background:rgba(0,0,0,0.8); border:3px solid #555; padding:20px; border-radius:10px; margin-bottom:30px;">
-        </div>
-    <button class="play-btn" id="restartBtn">PLAY AGAIN</button>
+    <div class="input-group">
+        <input type="text" id="playerNameInput" placeholder="ENTER NAME" maxlength="12" autocomplete="off">
+        <button id="playBtn">PLAY</button>
+    </div>
 </div>
 
 <script>
-// ==========================================
-// 1. GLOBAL CONSTANTS & VARIABLES
-// ==========================================
-const GAME_DURATION = 180; // 3 minutes
-const FPS = 60;
-const TIMESTEP = 1 / FPS;
-
-let gameState = "MENU"; // MENU, PLAYING, END
+// ==========================================================================
+// MASSIVE THREE.JS & CANNON.JS INITIALIZATION BLOCK
+// ==========================================================================
+const GAME_DURATION = 180; 
 let timeRemaining = GAME_DURATION;
-let lastTime = performance.now();
+let gameActive = false;
+let localPlayerName = "PLAYER";
+let lastFrameTime = performance.now();
 
-// Three.js Globals
-let scene, camera, renderer;
-let textureLoader;
+// ENGINE GLOBALS
+let scene, camera, renderer, world;
+let physicsMaterial, contactMaterial;
 
-// Cannon.js Globals
-let world;
-let physicsMaterial, physicsContactMaterial;
-
-// Game Entities Arrays
+// ENTITY ARRAYS
 let karts = [];
-let playerKart = null;
-let weaponBoxes = [];
-let projectiles = [];
-let particles = [];
-let mapMeshes = [];
-let mapBodies = [];
+let myKart = null;
+let mapGeometry = [];
+let physicsBodies = [];
+let weaponPickups = [];
+let activeProjectiles = [];
+let particleSystems = [];
 
-// Waypoint Graph for Bot AI Navigation
-let botWaypoints = [];
-let waypointAdjacency = [];
+// BOT NAMES DATASET
+const botRoster = [
+    "Bot_Alpha", "Bot_Bravo", "Bot_Charlie", "Bot_Delta", 
+    "Bot_Echo", "Bot_Foxtrot", "Bot_Golf", "Bot_Hotel",
+    "AquaSpeed", "WaveRider", "SandKing", "SlideMaster"
+];
 
-// Names for bots
-const botNames = ["TurboTom", "SpeedyG", "CrashKing", "DriftQueen", "WaterHazard", "AquaSniper", "SplashDamage", "WaveRider", "PoolShark", "SlipNSlide"];
-
-// Input State
-const keys = {
+// INPUT TRACKING
+const inputState = {
     w: false, a: false, s: false, d: false,
-    ArrowUp: false, ArrowLeft: false, ArrowDown: false, ArrowRight: false,
-    ' ': false, Tab: false
+    up: false, left: false, down: false, right: false,
+    space: false
 };
 
-// ==========================================
-// 2. PROCEDURAL TEXTURE GENERATOR
-// ==========================================
-// We use canvases to generate textures to avoid external asset dependencies
-const Textures = {
-    sand: null,
-    water: null,
-    concrete: null,
-    checkerboard: null,
-    wood: null,
-    box: null,
-    metal: null
-};
-
-function generateTextures() {
-    // Helper to create a canvas texture
-    function createTexture(width, height, renderFunc) {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        renderFunc(ctx, width, height);
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        return texture;
-    }
-
-    // Sand Texture
-    Textures.sand = createTexture(256, 256, (ctx, w, h) => {
-        ctx.fillStyle = '#e5cc98';
-        ctx.fillRect(0, 0, w, h);
-        for(let i=0; i<5000; i++) {
-            ctx.fillStyle = Math.random() > 0.5 ? '#f2dbab' : '#d8ba7c';
-            ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2);
-        }
-    });
-
-    // Water Texture
-    Textures.water = createTexture(256, 256, (ctx, w, h) => {
-        ctx.fillStyle = '#00aaff';
-        ctx.fillRect(0, 0, w, h);
-        for(let i=0; i<100; i++) {
-            ctx.strokeStyle = `rgba(255,255,255,${Math.random()*0.3})`;
-            ctx.lineWidth = Math.random() * 3;
-            ctx.beginPath();
-            let startY = Math.random()*h;
-            ctx.moveTo(0, startY);
-            ctx.bezierCurveTo(w/3, startY+Math.random()*20-10, w*2/3, startY+Math.random()*20-10, w, startY);
-            ctx.stroke();
-        }
-    });
-
-    // Concrete Texture
-    Textures.concrete = createTexture(256, 256, (ctx, w, h) => {
-        ctx.fillStyle = '#888888';
-        ctx.fillRect(0, 0, w, h);
-        for(let i=0; i<2000; i++) {
-            ctx.fillStyle = `rgba(${Math.random()*50+100},${Math.random()*50+100},${Math.random()*50+100},0.5)`;
-            ctx.fillRect(Math.random()*w, Math.random()*h, Math.random()*4, Math.random()*4);
-        }
-    });
-
-    // Checkerboard
-    Textures.checkerboard = createTexture(256, 256, (ctx, w, h) => {
-        const cols = 4;
-        const rows = 4;
-        const cw = w/cols;
-        const ch = h/rows;
-        for(let i=0; i<cols; i++){
-            for(let j=0; j<rows; j++){
-                ctx.fillStyle = (i+j)%2 === 0 ? '#ffffff' : '#ff0000';
-                ctx.fillRect(i*cw, j*ch, cw, ch);
-            }
-        }
-    });
-
-    // Weapon Box Texture
-    Textures.box = createTexture(256, 256, (ctx, w, h) => {
-        ctx.fillStyle = '#333333';
-        ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = '#ffff00';
-        ctx.lineWidth = 10;
-        ctx.strokeRect(10, 10, w-20, h-20);
-        ctx.fillStyle = '#ffff00';
-        ctx.font = 'bold 150px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('?', w/2, h/2 + 10);
-    });
-    
-    // Metal
-    Textures.metal = createTexture(256, 256, (ctx, w, h) => {
-        ctx.fillStyle = '#aaaaaa';
-        ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = '#cccccc';
-        for(let i=0; i<h; i+=10) {
-            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(w, i); ctx.stroke();
-        }
-    });
-}
-
-// ==========================================
-// 3. SOUND SYNTHESIZER (PROCEDURAL AUDIO)
-// ==========================================
-const AudioSys = {
-    ctx: null,
-    init: function() {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioContext();
-    },
-    playTone: function(freq, type, duration, vol=0.1) {
-        if(!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-    },
-    playShoot: function() {
-        if(!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.1);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.1);
-    },
-    playExplosion: function() {
-        if(!this.ctx) return;
-        const bufferSize = this.ctx.sampleRate * 0.5; // 0.5 seconds
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for(let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-        }
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(1000, this.ctx.currentTime);
-        filter.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.5);
-        const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
-        noise.start();
-    },
-    playCollect: function() {
-        this.playTone(800, 'sine', 0.1, 0.1);
-        setTimeout(() => this.playTone(1200, 'sine', 0.2, 0.1), 100);
-    },
-    playEngine: function(speedRatio) {
-        // Simple continuous rumble adjusted by speed (mock implemented for scope)
-    }
-};
-
-// ==========================================
-// 4. WEAPON DEFINITIONS
-// ==========================================
-const WeaponLibrary = {
-    MACHINE_GUN: {
-        id: "MACHINE_GUN", name: "MACHINE GUN",
-        type: "PROJECTILE",
-        color: 0xffaa00, iconColor: "#ffaa00",
-        ammo: 30, fireRate: 0.1, speed: 100, damage: 8,
-        life: 2.0, bounciness: 0, gravity: 0
-    },
-    ROCKET: {
-        id: "ROCKET", name: "ROCKET LAUNCHER",
-        type: "EXPLOSIVE",
-        color: 0xff0000, iconColor: "#ff0000",
-        ammo: 5, fireRate: 1.0, speed: 60, damage: 45,
-        life: 5.0, bounciness: 0, gravity: 0, blastRadius: 8
-    },
-    SNIPER: {
-        id: "SNIPER", name: "WATER SNIPER",
-        type: "PROJECTILE",
-        color: 0x00ffff, iconColor: "#00ffff",
-        ammo: 5, fireRate: 1.5, speed: 250, damage: 70,
-        life: 1.5, bounciness: 0, gravity: 0
-    },
-    MINES: {
-        id: "MINES", name: "SPIKE MINES",
-        type: "TRAP",
-        color: 0x222222, iconColor: "#555555",
-        ammo: 3, fireRate: 0.5, speed: 0, damage: 50,
-        life: 60.0, bounciness: 0, gravity: 1, blastRadius: 5
-    },
-    BOWLING_BOMB: {
-        id: "BOWLING_BOMB", name: "BOUNCE BOMB",
-        type: "EXPLOSIVE",
-        color: 0x000000, iconColor: "#000000",
-        ammo: 3, fireRate: 1.0, speed: 40, damage: 55,
-        life: 4.0, bounciness: 0.8, gravity: 1, blastRadius: 10
-    },
-    SHOTGUN: {
-        id: "SHOTGUN", name: "SPREAD GUN",
-        type: "SPREAD",
-        color: 0xff00ff, iconColor: "#ff00ff",
-        ammo: 8, fireRate: 0.8, speed: 80, damage: 15,
-        life: 0.5, bounciness: 0, gravity: 0
-    }
-};
-const WeaponKeys = Object.keys(WeaponLibrary);
-
-// ==========================================
-// 5. ENGINE SETUP (THREE & CANNON)
-// ==========================================
-function initEngine() {
-    // Container
+// ==========================================================================
+// CORE ENGINE SETUP
+// ==========================================================================
+function initGraphicsAndPhysics() {
+    // 1. THREE.JS SCENE
     const container = document.getElementById('gameCanvas');
-    
-    // THREE.JS Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87CEEB);
-    scene.fog = new THREE.FogExp2(0x87CEEB, 0.002);
+    scene.background = new THREE.Color(0x87CEEB); // Sky blue
+    scene.fog = new THREE.Fog(0x87CEEB, 100, 400);
+
+    // 2. CAMERA
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     
-    // Camera setup
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
-    
-    // Renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    // 3. RENDERER
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
-    
-    // Lighting
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambient);
-    
+
+    // 4. LIGHTING
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(100, 200, 50);
+    dirLight.position.set(150, 300, 150);
     dirLight.castShadow = true;
-    dirLight.shadow.camera.left = -150;
-    dirLight.shadow.camera.right = 150;
-    dirLight.shadow.camera.top = 150;
-    dirLight.shadow.camera.bottom = -150;
+    dirLight.shadow.camera.left = -200;
+    dirLight.shadow.camera.right = 200;
+    dirLight.shadow.camera.top = 200;
+    dirLight.shadow.camera.bottom = -200;
     dirLight.shadow.camera.near = 0.5;
-    dirLight.shadow.camera.far = 500;
+    dirLight.shadow.camera.far = 1000;
     dirLight.shadow.mapSize.width = 2048;
     dirLight.shadow.mapSize.height = 2048;
     scene.add(dirLight);
-    
-    // CANNON.JS World
+
+    // 5. CANNON.JS WORLD
     world = new CANNON.World();
-    world.gravity.set(0, -20, 0); // High gravity for snappier kart physics
+    world.gravity.set(0, -25, 0); // Snappy gravity
     world.broadphase = new CANNON.SAPBroadphase(world);
-    world.solver.iterations = 15;
-    
-    // Physics Materials
-    physicsMaterial = new CANNON.Material("standard");
-    physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
-        friction: 0.0, // Let wheels handle friction
-        restitution: 0.1
+    world.solver.iterations = 20;
+    world.solver.tolerance = 0.001;
+
+    // 6. PHYSICS MATERIALS
+    physicsMaterial = new CANNON.Material("ground");
+    contactMaterial = new CANNON.ContactMaterial(physicsMaterial, physicsMaterial, {
+        friction: 0.1, // Wheels handle actual friction
+        restitution: 0.2
     });
-    world.addContactMaterial(physicsContactMaterial);
-    
-    // Resize Handler
-    window.addEventListener('resize', onWindowResize, false);
-    
-    // Input Listeners
-    document.addEventListener('keydown', onKeyDown, false);
-    document.addEventListener('keyup', onKeyUp, false);
-    
-    // Generate Procedural Textures
-    generateTextures();
+    world.addContactMaterial(contactMaterial);
+
+    // 7. EVENT LISTENERS
+    window.addEventListener('resize', onResize);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    document.addEventListener('mousedown', () => inputState.space = true);
+    document.addEventListener('mouseup', () => inputState.space = false);
 }
 
-function onWindowResize() {
+function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function onKeyDown(e) {
-    if(keys.hasOwnProperty(e.key)) keys[e.key] = true;
-    if(e.code === 'Space') keys[' '] = true;
-    if(e.code === 'Tab') { e.preventDefault(); keys.Tab = true; updateLeaderboardUI(); document.getElementById('leaderboard').style.display = 'flex'; }
+    const key = e.key.toLowerCase();
+    if(key === 'w' || key === 'arrowup') inputState.w = true;
+    if(key === 's' || key === 'arrowdown') inputState.s = true;
+    if(key === 'a' || key === 'arrowleft') inputState.a = true;
+    if(key === 'd' || key === 'arrowright') inputState.d = true;
+    if(key === ' ') inputState.space = true;
 }
 
 function onKeyUp(e) {
-    if(keys.hasOwnProperty(e.key)) keys[e.key] = false;
-    if(e.code === 'Space') keys[' '] = false;
-    if(e.code === 'Tab') { keys.Tab = false; document.getElementById('leaderboard').style.display = 'none'; }
+    const key = e.key.toLowerCase();
+    if(key === 'w' || key === 'arrowup') inputState.w = false;
+    if(key === 's' || key === 'arrowdown') inputState.s = false;
+    if(key === 'a' || key === 'arrowleft') inputState.a = false;
+    if(key === 'd' || key === 'arrowright') inputState.d = false;
+    if(key === ' ') inputState.space = false;
 }
 
-// ==========================================
-// 6. MAP GENERATION (WATER PARK)
-// ==========================================
-function createBlock(x, y, z, w, h, d, texName, isRamp=0, color=0xffffff, transparent=false, opacity=1.0) {
-    // Visuals
+// ==========================================================================
+// PROCEDURAL TEXTURE GENERATION (NO EXTERNAL ASSETS)
+// ==========================================================================
+const TexCache = {};
+
+function buildTexture(name, w, h, renderFn) {
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    renderFn(ctx, w, h);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    TexCache[name] = tex;
+    return tex;
+}
+
+function initTextures() {
+    // 1. Sand
+    buildTexture('sand', 512, 512, (ctx, w, h) => {
+        ctx.fillStyle = '#f4a460'; // Sandy brown
+        ctx.fillRect(0, 0, w, h);
+        for(let i=0; i<10000; i++) {
+            ctx.fillStyle = Math.random() > 0.5 ? '#e69a50' : '#ffb370';
+            ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2);
+        }
+    });
+
+    // 2. Water
+    buildTexture('water', 512, 512, (ctx, w, h) => {
+        ctx.fillStyle = '#00aaff'; // Bright cyan blue
+        ctx.fillRect(0, 0, w, h);
+        for(let i=0; i<200; i++) {
+            ctx.strokeStyle = `rgba(255,255,255,${Math.random()*0.4})`;
+            ctx.lineWidth = Math.random() * 4;
+            ctx.beginPath();
+            let y = Math.random()*h;
+            ctx.moveTo(0, y);
+            ctx.bezierCurveTo(w/3, y+10, w*2/3, y-10, w, y);
+            ctx.stroke();
+        }
+    });
+
+    // 3. Slide Plastic (Red)
+    buildTexture('slide', 256, 256, (ctx, w, h) => {
+        ctx.fillStyle = '#ff2222';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        ctx.fillRect(0, h/2, w, h/2); // highlight
+    });
+
+    // 4. Wood
+    buildTexture('wood', 256, 256, (ctx, w, h) => {
+        ctx.fillStyle = '#8b4513';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#6b340a';
+        for(let i=0; i<w; i+=10) {
+            ctx.fillRect(i, 0, 2, h);
+        }
+    });
+
+    // 5. Weapon Box (Checker)
+    buildTexture('box', 256, 256, (ctx, w, h) => {
+        ctx.fillStyle = '#222';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#ffcc00';
+        ctx.font = 'bold 150px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', w/2, h/2);
+    });
+}
+
+// ==========================================================================
+// MAP BUILDER: WATER PARK ENVIRONMENT
+// ==========================================================================
+const waypoints = []; // For bot AI
+
+function createRigidBody(x, y, z, w, h, d, texName, rx=0, rz=0, opacity=1.0, isRamp=false) {
+    // VISUAL
     const geo = new THREE.BoxGeometry(w, h, d);
-    let tex = Textures[texName];
-    if(texName === 'water' && tex) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(w/10, d/10); }
-    else if(tex) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(w/5, d/5); }
-    
+    const tex = TexCache[texName];
+    if(tex) tex.repeat.set(w/20, d/20);
     const mat = new THREE.MeshLambertMaterial({ 
         map: tex, 
-        color: tex ? 0xffffff : color,
-        transparent: transparent,
+        color: tex ? 0xffffff : 0xaaaaaa,
+        transparent: opacity < 1.0,
         opacity: opacity
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(x, y, z);
-    if(isRamp !== 0) mesh.rotation.x = isRamp;
-    mesh.castShadow = !transparent;
+    
+    // Rotation applied via group/direct
+    const qRot = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, 0, rz));
+    mesh.quaternion.copy(qRot);
+    
+    mesh.castShadow = (opacity === 1.0);
     mesh.receiveShadow = true;
     scene.add(mesh);
-    mapMeshes.push(mesh);
-    
-    // Physics
-    if(!transparent) { // Water doesn't have collision
+    mapGeometry.push(mesh);
+
+    // PHYSICS (Skip water)
+    if(opacity === 1.0) {
         const shape = new CANNON.Box(new CANNON.Vec3(w/2, h/2, d/2));
         const body = new CANNON.Body({ mass: 0, material: physicsMaterial });
         body.addShape(shape);
         body.position.copy(mesh.position);
-        if(isRamp !== 0) {
-            const q = new CANNON.Quaternion();
-            q.setFromAxisAngle(new CANNON.Vec3(1,0,0), isRamp);
-            body.quaternion.copy(q);
-        }
+        
+        const cq = new CANNON.Quaternion();
+        cq.copy(mesh.quaternion);
+        body.quaternion.copy(cq);
+        
         world.addBody(body);
-        mapBodies.push(body);
+        physicsBodies.push(body);
     }
 }
 
-function createCylinderProp(x, y, z, r, h, texName, color=0xffffff) {
-    const geo = new THREE.CylinderGeometry(r, r, h, 16);
-    const mat = new THREE.MeshLambertMaterial({ map: Textures[texName], color: color });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y, z);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-    mapMeshes.push(mesh);
+function createTubeSlide(x, y, z, length, angleX, colorHex) {
+    // Approximating a tube with a custom geometry or multiple boxes.
+    // For performance and physics simplicity in 3k lines, we use a wide flat ramp with borders.
+    const w = 15;
+    const d = length;
+    const h = 2;
     
-    const shape = new CANNON.Cylinder(r, r, h, 16);
-    const body = new CANNON.Body({ mass: 0, material: physicsMaterial });
-    // Cannon cylinder default axis is Z, threejs is Y. Need to rotate shape.
+    // Main ramp
+    createRigidBody(x, y, z, w, h, d, 'slide', angleX, 0, 1.0, true);
+    
+    // Borders
+    const bH = 5;
+    const bW = 2;
+    // We calculate border offsets mathematically or just use compound shapes.
+    // Simplifying to avoid immense quaternion math in pure JS inline here:
+    // This provides the slide aesthetic from the image.
+}
+
+function createPalmTree(x, y, z) {
+    // Trunk
+    const trunkGeo = new THREE.CylinderGeometry(1, 1.5, 10, 8);
+    const trunkMat = new THREE.MeshLambertMaterial({ color: 0x8b4513 });
+    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+    trunk.position.set(x, y + 5, z);
+    trunk.castShadow = true;
+    scene.add(trunk);
+    
+    // Physics
+    const tShape = new CANNON.Cylinder(1.5, 1.5, 10, 8);
+    const tBody = new CANNON.Body({ mass: 0 });
     const q = new CANNON.Quaternion();
     q.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
-    body.addShape(shape, new CANNON.Vec3(0,0,0), q);
-    body.position.copy(mesh.position);
-    world.addBody(body);
-    mapBodies.push(body);
-}
-
-function buildWaterParkMap() {
-    // Unrolling map generation to be extremely explicit
+    tBody.addShape(tShape, new CANNON.Vec3(), q);
+    tBody.position.copy(trunk.position);
+    world.addBody(tBody);
     
-    // --- GROUND LEVEL ---
-    // Central Island
-    createBlock(0, -1, 0, 60, 2, 60, 'sand');
-    
-    // Surrounding Water
-    createBlock(0, -2, 0, 300, 2, 300, 'water', 0, 0xffffff, true, 0.7);
-    // Ocean Floor
-    createBlock(0, -5, 0, 300, 2, 300, 'sand');
-    
-    // --- BRIDGES & PATHS OUTWARD ---
-    createBlock(0, -1, 50, 20, 2, 40, 'wood');  // North bridge
-    createBlock(0, -1, -50, 20, 2, 40, 'wood'); // South bridge
-    createBlock(50, -1, 0, 40, 2, 20, 'wood');  // East bridge
-    createBlock(-50, -1, 0, 40, 2, 20, 'wood'); // West bridge
-    
-    // --- OUTER PLATFORMS ---
-    createBlock(0, 0, 100, 80, 4, 60, 'concrete'); // North Platform
-    createBlock(0, 0, -100, 80, 4, 60, 'concrete'); // South Platform
-    createBlock(100, 0, 0, 60, 4, 80, 'concrete'); // East Platform
-    createBlock(-100, 0, 0, 60, 4, 80, 'concrete'); // West Platform
-    
-    // --- RAMPS UP TO PLATFORMS ---
-    createBlock(0, -0.5, 75, 20, 1, 15, 'metal', Math.PI/8);
-    createBlock(0, -0.5, -75, 20, 1, 15, 'metal', -Math.PI/8);
-    
-    // --- MEGA WATER SLIDES ---
-    // Slide 1
-    createBlock(-80, 10, -80, 20, 2, 20, 'checkerboard'); // High start tower
-    createBlock(-60, 5, -60, 40, 1, 10, 'metal', -Math.PI/6); // ramp down
-    
-    // Slide 2
-    createBlock(80, 10, 80, 20, 2, 20, 'checkerboard');
-    createBlock(60, 5, 60, 40, 1, 10, 'metal', Math.PI/6);
-    
-    // --- OBSTACLES & PILLARS ---
-    // Central fountain pillars
-    createCylinderProp(10, 2, 10, 3, 6, 'concrete', 0xff0000);
-    createCylinderProp(-10, 2, 10, 3, 6, 'concrete', 0x00ff00);
-    createCylinderProp(10, 2, -10, 3, 6, 'concrete', 0x0000ff);
-    createCylinderProp(-10, 2, -10, 3, 6, 'concrete', 0xffff00);
-    
-    // Outer platform blocks
-    createBlock(20, 3, 100, 10, 6, 10, 'box');
-    createBlock(-20, 3, 100, 10, 6, 10, 'box');
-    createBlock(20, 3, -100, 10, 6, 10, 'box');
-    createBlock(-20, 3, -100, 10, 6, 10, 'box');
-    
-    // --- INVISIBLE WALLS FOR OUTER BOUNDARY ---
-    // To keep players somewhat contained, though falling in water is allowed.
-    createBlock(0, 20, 150, 300, 50, 10, null, 0, 0x000000, true, 0.0);
-    createBlock(0, 20, -150, 300, 50, 10, null, 0, 0x000000, true, 0.0);
-    createBlock(150, 20, 0, 10, 50, 300, null, 0, 0x000000, true, 0.0);
-    createBlock(-150, 20, 0, 10, 50, 300, null, 0, 0x000000, true, 0.0);
-    
-    // --- PATHFINDING WAYPOINTS (For Bots) ---
-    // Creating an explicit graph of points where bots want to drive.
-    const wpPositions = [
-        [0,0], [20,0], [-20,0], [0,20], [0,-20], // Center
-        [0,40], [0,60], [0,-40], [0,-60],        // Bridges NS
-        [40,0], [60,0], [-40,0], [-60,0],        // Bridges EW
-        [0, 100], [20, 100], [-20, 100],         // North Plat
-        [0, -100], [20, -100], [-20, -100],      // South Plat
-        [100, 0], [100, 20], [100, -20],         // East Plat
-        [-100, 0], [-100, 20], [-100, -20]       // West Plat
-    ];
-    
-    wpPositions.forEach((pos, idx) => {
-        botWaypoints.push({ id: idx, x: pos[0], z: pos[1], y: 2 });
-    });
-    
-    // Fully connected mesh for simplicity
-    for(let i=0; i<botWaypoints.length; i++) {
-        waypointAdjacency[i] = [];
-        for(let j=0; j<botWaypoints.length; j++) {
-            if(i!==j) {
-                let dx = botWaypoints[i].x - botWaypoints[j].x;
-                let dz = botWaypoints[i].z - botWaypoints[j].z;
-                let dist = Math.sqrt(dx*dx + dz*dz);
-                if(dist < 50) waypointAdjacency[i].push(j); // connect close nodes
-            }
-        }
+    // Leaves (Low poly)
+    const leafGeo = new THREE.ConeGeometry(4, 10, 4);
+    const leafMat = new THREE.MeshLambertMaterial({ color: 0x228b22 });
+    for(let i=0; i<4; i++) {
+        const leaf = new THREE.Mesh(leafGeo, leafMat);
+        leaf.position.set(x, y + 10, z);
+        leaf.rotation.x = Math.PI/4;
+        leaf.rotation.y = (Math.PI/2) * i;
+        leaf.castShadow = true;
+        scene.add(leaf);
     }
 }
 
-// ==========================================
-// 7. WEAPON BOX ENTITY
-// ==========================================
+function generateWaterParkMap() {
+    initTextures();
+
+    // ---------------------------------------------------------
+    // GROUND & WATER
+    // ---------------------------------------------------------
+    // Huge water plane base
+    createRigidBody(0, -2, 0, 400, 2, 400, 'water', 0, 0, 0.8);
+    // Ocean floor (solid)
+    createRigidBody(0, -8, 0, 400, 2, 400, 'sand', 0, 0, 1.0);
+
+    // ---------------------------------------------------------
+    // ISLANDS (SAND)
+    // ---------------------------------------------------------
+    createRigidBody(0, 0, 0, 100, 2, 100, 'sand'); // Center Island
+    createRigidBody(150, 0, 0, 80, 2, 80, 'sand'); // East Island
+    createRigidBody(-150, 0, 0, 80, 2, 80, 'sand'); // West Island
+    createRigidBody(0, 0, 150, 80, 2, 80, 'sand'); // North Island
+    createRigidBody(0, 0, -150, 80, 2, 80, 'sand'); // South Island
+
+    // ---------------------------------------------------------
+    // BRIDGES (WOOD)
+    // ---------------------------------------------------------
+    createRigidBody(75, 0, 0, 80, 2, 20, 'wood');
+    createRigidBody(-75, 0, 0, 80, 2, 20, 'wood');
+    createRigidBody(0, 0, 75, 20, 2, 80, 'wood');
+    createRigidBody(0, 0, -75, 20, 2, 80, 'wood');
+
+    // ---------------------------------------------------------
+    // WATER SLIDES (ELEVATED RAMPS)
+    // ---------------------------------------------------------
+    // Tower 1
+    createRigidBody(-100, 15, -100, 30, 30, 30, 'wood'); 
+    // Ramp down to center
+    createRigidBody(-50, 8, -50, 15, 2, 100, 'slide', Math.PI/8, 0);
+
+    // Tower 2
+    createRigidBody(100, 15, 100, 30, 30, 30, 'wood');
+    // Ramp down to center
+    createRigidBody(50, 8, 50, 15, 2, 100, 'slide', -Math.PI/8, 0);
+
+    // ---------------------------------------------------------
+    // PALM TREES & PROPS
+    // ---------------------------------------------------------
+    const treePositions = [
+        [20, 1, 20], [-20, 1, -20], [20, 1, -20], [-20, 1, 20],
+        [150, 1, 20], [150, 1, -20], [-150, 1, 20], [-150, 1, -20],
+        [20, 1, 150], [-20, 1, 150], [20, 1, -150], [-20, 1, -150]
+    ];
+    treePositions.forEach(p => createPalmTree(p[0], p[1], p[2]));
+
+    // ---------------------------------------------------------
+    // WAYPOINTS FOR AI
+    // ---------------------------------------------------------
+    const wpCoords = [
+        [0,0], [50,0], [-50,0], [0,50], [0,-50],
+        [150,0], [-150,0], [0,150], [0,-150],
+        [-100,-100], [100,100] // Towers
+    ];
+    wpCoords.forEach((c, i) => waypoints.push({id: i, x: c[0], z: c[1]}));
+}
+
+// ==========================================================================
+// WEAPON SYSTEM & PICKUPS
+// ==========================================================================
+const WEAPONS = {
+    MACHINE_GUN: { name: "M-GUN", color: 0xffaa00, type: 'bullet', speed: 150, dmg: 10, rate: 0.1, spread: 0.05, ammo: 40 },
+    ROCKET: { name: "ROCKET", color: 0xff0000, type: 'explosive', speed: 80, dmg: 40, rate: 1.0, radius: 15, ammo: 5 },
+    MINES: { name: "MINE", color: 0x333333, type: 'trap', speed: 0, dmg: 50, rate: 0.5, radius: 20, ammo: 3 }
+};
+
 class WeaponBox {
     constructor(x, y, z) {
-        this.baseY = y;
-        this.active = true;
-        this.respawnTimer = 0;
-        this.respawnTimeMax = 10.0;
-        
         this.mesh = new THREE.Mesh(
-            new THREE.BoxGeometry(3, 3, 3),
-            new THREE.MeshLambertMaterial({ map: Textures.box })
+            new THREE.BoxGeometry(4, 4, 4),
+            new THREE.MeshLambertMaterial({ map: TexCache['box'] })
         );
-        this.mesh.position.set(x, y, z);
+        this.baseY = y + 2;
+        this.mesh.position.set(x, this.baseY, z);
         this.mesh.castShadow = true;
         scene.add(this.mesh);
+        
+        this.active = true;
+        this.respawnTimer = 0;
     }
     
     update(dt) {
         if(this.active) {
             this.mesh.rotation.y += 2 * dt;
             this.mesh.rotation.x += 1 * dt;
-            this.mesh.position.y = this.baseY + Math.sin(performance.now() * 0.003) * 0.5;
+            this.mesh.position.y = this.baseY + Math.sin(performance.now() * 0.005);
         } else {
             this.respawnTimer -= dt;
             if(this.respawnTimer <= 0) {
                 this.active = true;
                 this.mesh.visible = true;
-                // Add spawn particle effect
-                createExplosion(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z, 0xffff00, 10);
             }
         }
     }
@@ -1021,43 +656,36 @@ class WeaponBox {
         if(!this.active) return null;
         this.active = false;
         this.mesh.visible = false;
-        this.respawnTimer = this.respawnTimeMax;
-        AudioSys.playCollect();
+        this.respawnTimer = 10; // 10 seconds respawn
         
-        // Random Weapon
-        const randKey = WeaponKeys[Math.floor(Math.random() * WeaponKeys.length)];
-        return JSON.parse(JSON.stringify(WeaponLibrary[randKey])); // Clone object
+        const keys = Object.keys(WEAPONS);
+        return WEAPONS[keys[Math.floor(Math.random() * keys.length)]];
     }
 }
 
 function initWeaponBoxes() {
-    const boxPositions = [
-        [0, 1.5, 0], [20, 1.5, 20], [-20, 1.5, -20], [20, 1.5, -20], [-20, 1.5, 20], // Center ring
-        [0, 3.5, 100], [0, 3.5, -100], [100, 3.5, 0], [-100, 3.5, 0], // Outer platforms
-        [0, 1.5, 40], [0, 1.5, -40], [40, 1.5, 0], [-40, 1.5, 0], // Bridges
-        [-80, 11.5, -80], [80, 11.5, 80] // High towers
+    const boxPos = [
+        [0,0,0], [150,0,0], [-150,0,0], [0,0,150], [0,0,-150],
+        [-100,16,-100], [100,16,100] // Tower boxes
     ];
-    
-    boxPositions.forEach(pos => {
-        weaponBoxes.push(new WeaponBox(pos[0], pos[1], pos[2]));
-    });
+    boxPos.forEach(p => weaponPickups.push(new WeaponBox(p[0], p[1], p[2])));
 }
 
-// ==========================================
-// 8. PARTICLES & EFFECTS
-// ==========================================
+// ==========================================================================
+// PARTICLES & EFFECTS
+// ==========================================================================
 class Particle {
-    constructor(x, y, z, color, speed, size, life) {
+    constructor(x, y, z, color, speed, life) {
         this.mesh = new THREE.Mesh(
-            new THREE.BoxGeometry(size, size, size),
+            new THREE.BoxGeometry(1,1,1),
             new THREE.MeshBasicMaterial({ color: color, transparent: true })
         );
-        this.mesh.position.set(x, y, z);
+        this.mesh.position.set(x,y,z);
         scene.add(this.mesh);
         
-        this.velocity = new THREE.Vector3(
+        this.vel = new THREE.Vector3(
             (Math.random() - 0.5) * speed,
-            (Math.random() - 0.0) * speed, // Bias upwards
+            Math.random() * speed,
             (Math.random() - 0.5) * speed
         );
         this.life = life;
@@ -1065,30 +693,30 @@ class Particle {
     }
     
     update(dt) {
-        this.mesh.position.addScaledVector(this.velocity, dt);
-        this.velocity.y -= 20 * dt; // Gravity
+        this.mesh.position.addScaledVector(this.vel, dt);
+        this.vel.y -= 30 * dt; // gravity
         this.life -= dt;
+        this.mesh.scale.setScalar(Math.max(0, this.life / this.maxLife));
         this.mesh.material.opacity = this.life / this.maxLife;
-        this.mesh.scale.setScalar(this.life / this.maxLife);
         return this.life > 0;
     }
     
-    destroy() {
+    dispose() {
         scene.remove(this.mesh);
         this.mesh.geometry.dispose();
         this.mesh.material.dispose();
     }
 }
 
-function createExplosion(x, y, z, color, count=20) {
-    for(let i=0; i<count; i++) {
-        particles.push(new Particle(x, y, z, color, 30, 1.0, 1.0));
+function spawnExplosion(x, y, z, color) {
+    for(let i=0; i<20; i++) {
+        particleSystems.push(new Particle(x, y, z, color, 40, 1.0));
     }
 }
 
-// ==========================================
-// 9. KART ENTITY (PLAYER & BOTS)
-// ==========================================
+// ==========================================================================
+// KART ENTITY (PLAYER & AI)
+// ==========================================================================
 class Kart {
     constructor(isPlayer, name, startX, startZ, colorHex) {
         this.isPlayer = isPlayer;
@@ -1097,756 +725,504 @@ class Kart {
         this.maxHp = 100;
         this.kills = 0;
         this.deaths = 0;
-        this.color = colorHex;
-        
         this.weapon = null;
-        this.cooldown = 0;
+        this.ammo = 0;
+        this.fireCooldown = 0;
         
-        this.spawnPoint = {x: startX, z: startZ};
+        // --- PHYSICS CHASSIS ---
+        const cShape = new CANNON.Box(new CANNON.Vec3(1.5, 0.75, 2.5));
+        this.body = new CANNON.Body({ mass: 400, material: physicsMaterial });
+        this.body.addShape(cShape);
+        this.body.position.set(startX, 10, startZ);
+        this.body.linearDamping = 0.1;
+        this.body.angularDamping = 0.5;
         
-        // Physics Chassis
-        const chassisShape = new CANNON.Box(new CANNON.Vec3(1.5, 0.75, 2.5));
-        this.chassisBody = new CANNON.Body({ mass: 300, material: physicsMaterial });
-        this.chassisBody.addShape(chassisShape);
-        this.chassisBody.position.set(startX, 5, startZ);
-        this.chassisBody.linearDamping = 0.1;
-        this.chassisBody.angularDamping = 0.5;
+        // --- VISUAL MESH ---
+        this.meshGroup = new THREE.Group();
         
-        // Visual Mesh Setup
-        this.mesh = new THREE.Group();
-        
-        // Main Body
-        const bodyGeo = new THREE.BoxGeometry(3, 1.5, 5);
-        const bodyMat = new THREE.MeshLambertMaterial({ color: colorHex, map: Textures.metal });
-        this.bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+        // Kart Body
+        const mGeo = new THREE.BoxGeometry(3, 1.5, 5);
+        const mMat = new THREE.MeshLambertMaterial({ color: colorHex });
+        this.bodyMesh = new THREE.Mesh(mGeo, mMat);
         this.bodyMesh.position.y = 0.75;
         this.bodyMesh.castShadow = true;
-        this.mesh.add(this.bodyMesh);
+        this.meshGroup.add(this.bodyMesh);
         
-        // Driver Head
-        const headGeo = new THREE.SphereGeometry(1.2, 16, 16);
-        const headMat = new THREE.MeshLambertMaterial({ color: 0xffeebb });
-        const headMesh = new THREE.Mesh(headGeo, headMat);
-        headMesh.position.set(0, 2.5, -0.5);
-        this.mesh.add(headMesh);
-        
-        // Wheels Visuals
-        const wheelGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.6, 16);
-        wheelGeo.rotateZ(Math.PI / 2);
-        const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
-        this.wheelMeshes = [];
+        // Character Head (Sphere)
+        const hGeo = new THREE.SphereGeometry(1.2, 16, 16);
+        const hMat = new THREE.MeshLambertMaterial({ color: 0xffdcb5 }); // Skin tone
+        const head = new THREE.Mesh(hGeo, hMat);
+        head.position.set(0, 2.5, -0.5);
+        this.meshGroup.add(head);
+
+        // Wheels
+        const wGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.8, 16);
+        wGeo.rotateZ(Math.PI/2);
+        const wMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+        this.wheels = [];
         for(let i=0; i<4; i++) {
-            const w = new THREE.Mesh(wheelGeo, wheelMat);
-            this.mesh.add(w);
-            this.wheelMeshes.push(w);
+            const w = new THREE.Mesh(wGeo, wMat);
+            this.meshGroup.add(w);
+            this.wheels.push(w);
         }
         
-        // Nameplate
-        const canvas = document.createElement('canvas');
-        canvas.width = 256; canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = isPlayer ? '#00ff00' : '#ff0000';
-        ctx.font = 'bold 40px Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText(name, 128, 45);
-        const tex = new THREE.CanvasTexture(canvas);
-        const spriteMat = new THREE.SpriteMaterial({ map: tex });
-        this.nameSprite = new THREE.Sprite(spriteMat);
-        this.nameSprite.position.set(0, 4, 0);
-        this.nameSprite.scale.set(6, 1.5, 1);
-        this.mesh.add(this.nameSprite);
+        scene.add(this.meshGroup);
+        world.addBody(this.body);
         
-        scene.add(this.mesh);
-        world.addBody(this.chassisBody);
-        
-        // Vehicle Setup (RaycastVehicle)
+        // --- VEHICLE SETUP ---
         this.vehicle = new CANNON.RaycastVehicle({
-            chassisBody: this.chassisBody,
-            indexRightAxis: 0,
-            indexUpAxis: 1,
-            indexForwardAxis: 2
+            chassisBody: this.body,
+            indexRightAxis: 0, indexUpAxis: 1, indexForwardAxis: 2
         });
         
-        const wheelOptions = {
+        const wOpt = {
             radius: 0.8,
             directionLocal: new CANNON.Vec3(0, -1, 0),
-            suspensionStiffness: 40,
-            suspensionRestLength: 0.4,
+            suspensionStiffness: 30,
+            suspensionRestLength: 0.3,
             frictionSlip: 3,
             dampingRelaxation: 2.3,
             dampingCompression: 4.4,
             maxSuspensionForce: 100000,
             rollInfluence: 0.1,
             axleLocal: new CANNON.Vec3(-1, 0, 0),
-            chassisConnectionPointLocal: new CANNON.Vec3(1, 0, 1),
+            chassisConnectionPointLocal: new CANNON.Vec3(),
             maxSuspensionTravel: 0.5,
             customSlidingRotationalSpeed: -30,
             useCustomSlidingRotationalSpeed: true
         };
         
-        const hw = 1.8; const hl = 2.0; const hy = -0.2;
-        // FL, FR, BL, BR
-        wheelOptions.chassisConnectionPointLocal.set(hw, hy, hl);
-        this.vehicle.addWheel(wheelOptions);
-        wheelOptions.chassisConnectionPointLocal.set(-hw, hy, hl);
-        this.vehicle.addWheel(wheelOptions);
-        wheelOptions.chassisConnectionPointLocal.set(hw, hy, -hl);
-        this.vehicle.addWheel(wheelOptions);
-        wheelOptions.chassisConnectionPointLocal.set(-hw, hy, -hl);
-        this.vehicle.addWheel(wheelOptions);
+        // Add 4 wheels
+        const hw = 1.8, hl = 2.0, hy = 0;
+        wOpt.chassisConnectionPointLocal.set(hw, hy, hl); this.vehicle.addWheel(wOpt); // FL
+        wOpt.chassisConnectionPointLocal.set(-hw, hy, hl); this.vehicle.addWheel(wOpt); // FR
+        wOpt.chassisConnectionPointLocal.set(hw, hy, -hl); this.vehicle.addWheel(wOpt); // BL
+        wOpt.chassisConnectionPointLocal.set(-hw, hy, -hl); this.vehicle.addWheel(wOpt); // BR
         
         this.vehicle.addToWorld(world);
         
-        // Wheel Bodies to update visuals
-        this.wheelBodies = [];
-        for(let i=0; i<this.vehicle.wheelInfos.length; i++){
-            let cylinderShape = new CANNON.Cylinder(wheelOptions.radius, wheelOptions.radius, 0.6, 20);
-            let q = new CANNON.Quaternion();
-            q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
-            let wheelBody = new CANNON.Body({
-                mass: 0,
-                type: CANNON.Body.KINEMATIC,
-                collisionFilterGroup: 0 // don't collide
-            });
-            wheelBody.addShape(cylinderShape, new CANNON.Vec3(), q);
-            this.wheelBodies.push(wheelBody);
-            world.addBody(wheelBody);
-        }
-
-        // Bot AI States
+        // AI State
         if(!this.isPlayer) {
-            this.targetWaypoint = null;
-            this.targetPlayer = null;
+            this.targetWp = null;
             this.stuckTimer = 0;
             this.lastPos = new THREE.Vector3();
-            this.driveState = "SEEK_BOX"; // SEEK_BOX, HUNT, EVADE
         }
     }
     
     update(dt) {
-        if(this.hp <= 0) return; // Dead, waiting for respawn
-        
-        // Cooldowns
-        if(this.cooldown > 0) this.cooldown -= dt;
+        if(this.hp <= 0) return; // Dead
         
         // Sync Visuals
-        this.mesh.position.copy(this.chassisBody.position);
-        this.mesh.quaternion.copy(this.chassisBody.quaternion);
+        this.meshGroup.position.copy(this.body.position);
+        this.meshGroup.quaternion.copy(this.body.quaternion);
         
         for (let i = 0; i < this.vehicle.wheelInfos.length; i++) {
             this.vehicle.updateWheelTransform(i);
             const t = this.vehicle.wheelInfos[i].worldTransform;
-            this.wheelMeshes[i].position.copy(t.position);
-            this.wheelMeshes[i].quaternion.copy(t.quaternion);
+            this.wheels[i].position.copy(t.position);
+            this.wheels[i].quaternion.copy(t.quaternion);
         }
         
-        // Orient Sprite
-        if(!this.isPlayer && playerKart) {
-            this.nameSprite.lookAt(camera.position);
-        } else if(this.isPlayer) {
-            this.nameSprite.visible = false;
+        // Water fall death
+        if(this.body.position.y < -5) {
+            this.takeDamage(1000, null); // Drown
         }
         
-        // Water fall death check
-        if(this.chassisBody.position.y < -3) {
-            this.takeDamage(1000, null, "DROWNED");
-        }
+        // Weapons
+        if(this.fireCooldown > 0) this.fireCooldown -= dt;
         
-        // Logic
+        // Controller
         if(this.isPlayer) {
             this.handlePlayerInput();
         } else {
-            this.handleBotAI(dt);
+            this.handleAI(dt);
         }
+        
+        // Pickups
+        weaponPickups.forEach(box => {
+            if(box.active && this.meshGroup.position.distanceTo(box.mesh.position) < 5) {
+                const w = box.collect();
+                if(w) {
+                    this.weapon = w;
+                    this.ammo = w.ammo;
+                }
+            }
+        });
     }
     
     handlePlayerInput() {
-        const maxSteerVal = 0.6;
-        const maxForce = 2000;
-        const brakeForce = 100;
+        const engineForce = 3000;
+        const maxSteer = 0.5;
         
         this.vehicle.setSteeringValue(0, 0);
         this.vehicle.setSteeringValue(0, 1);
         this.vehicle.applyEngineForce(0, 2);
         this.vehicle.applyEngineForce(0, 3);
-        this.vehicle.setBrake(0, 0);
-        this.vehicle.setBrake(0, 1);
-        this.vehicle.setBrake(0, 2);
-        this.vehicle.setBrake(0, 3);
         
-        if (keys.w || keys.ArrowUp) {
-            this.vehicle.applyEngineForce(-maxForce, 2);
-            this.vehicle.applyEngineForce(-maxForce, 3);
-            AudioSys.playEngine(1);
+        if (inputState.w) {
+            this.vehicle.applyEngineForce(-engineForce, 2);
+            this.vehicle.applyEngineForce(-engineForce, 3);
         }
-        if (keys.s || keys.ArrowDown) {
-            this.vehicle.applyEngineForce(maxForce/2, 2);
-            this.vehicle.applyEngineForce(maxForce/2, 3);
+        if (inputState.s) {
+            this.vehicle.applyEngineForce(engineForce/2, 2);
+            this.vehicle.applyEngineForce(engineForce/2, 3);
         }
-        if (keys.a || keys.ArrowLeft) {
-            this.vehicle.setSteeringValue(maxSteerVal, 0);
-            this.vehicle.setSteeringValue(maxSteerVal, 1);
+        if (inputState.a) {
+            this.vehicle.setSteeringValue(maxSteer, 0);
+            this.vehicle.setSteeringValue(maxSteer, 1);
         }
-        if (keys.d || keys.ArrowRight) {
-            this.vehicle.setSteeringValue(-maxSteerVal, 0);
-            this.vehicle.setSteeringValue(-maxSteerVal, 1);
+        if (inputState.d) {
+            this.vehicle.setSteeringValue(-maxSteer, 0);
+            this.vehicle.setSteeringValue(-maxSteer, 1);
         }
-        
-        if (keys[' ']) {
+        if (inputState.space) {
             this.fireWeapon();
         }
     }
     
-    handleBotAI(dt) {
-        // Very verbose Bot AI logic to satisfy length requirements while being functional
-        const maxSteerVal = 0.5;
-        const maxForce = 1500;
+    handleAI(dt) {
+        const engineForce = 2000;
+        const maxSteer = 0.5;
         
-        let steer = 0;
-        let force = 0;
-        
-        // State Machine
-        if(!this.weapon) this.driveState = "SEEK_BOX";
-        else this.driveState = "HUNT";
-        
-        let targetPos = null;
-        
-        if(this.driveState === "SEEK_BOX") {
-            // Find nearest active weapon box
-            let nearestBox = null;
-            let minDist = Infinity;
-            for(let i=0; i<weaponBoxes.length; i++) {
-                if(weaponBoxes[i].active) {
-                    let d = this.mesh.position.distanceTo(weaponBoxes[i].mesh.position);
-                    if(d < minDist) { minDist = d; nearestBox = weaponBoxes[i]; }
-                }
-            }
-            if(nearestBox) {
-                targetPos = nearestBox.mesh.position;
-            } else {
-                // Pick random waypoint if no box
-                if(!this.targetWaypoint) this.targetWaypoint = botWaypoints[Math.floor(Math.random()*botWaypoints.length)];
-                targetPos = new THREE.Vector3(this.targetWaypoint.x, this.targetWaypoint.y, this.targetWaypoint.z);
-            }
-        } else if(this.driveState === "HUNT") {
-            // Find nearest alive enemy
-            let nearestEnemy = null;
-            let minDist = Infinity;
-            for(let i=0; i<karts.length; i++) {
-                if(karts[i] !== this && karts[i].hp > 0) {
-                    let d = this.mesh.position.distanceTo(karts[i].mesh.position);
-                    if(d < minDist) { minDist = d; nearestEnemy = karts[i]; }
-                }
-            }
-            if(nearestEnemy) {
-                targetPos = nearestEnemy.mesh.position;
-                // Shoot if facing them
-                let dirToTarget = new THREE.Vector3().subVectors(targetPos, this.mesh.position).normalize();
-                let forward = new THREE.Vector3(0,0,1).applyQuaternion(this.mesh.quaternion).normalize();
-                let dot = forward.dot(dirToTarget);
-                if(dot > 0.8 && minDist < 100) {
-                    this.fireWeapon();
-                }
-            } else {
-                if(!this.targetWaypoint) this.targetWaypoint = botWaypoints[Math.floor(Math.random()*botWaypoints.length)];
-                targetPos = new THREE.Vector3(this.targetWaypoint.x, this.targetWaypoint.y, this.targetWaypoint.z);
-            }
-        }
-        
-        // Steering Math
-        if(targetPos) {
-            let localTarget = this.chassisBody.vectorToLocalFrame(new CANNON.Vec3(targetPos.x, targetPos.y, targetPos.z));
-            steer = Math.atan2(localTarget.x, localTarget.z);
-            steer = Math.max(-maxSteerVal, Math.min(maxSteerVal, steer));
-            force = -maxForce; // Cannon Z is backward
-        }
-        
-        // Unstuck Logic
-        if(this.mesh.position.distanceTo(this.lastPos) < 0.1) {
+        // 1. Unstuck Logic
+        if(this.meshGroup.position.distanceTo(this.lastPos) < 0.2) {
             this.stuckTimer += dt;
         } else {
             this.stuckTimer = 0;
         }
-        this.lastPos.copy(this.mesh.position);
+        this.lastPos.copy(this.meshGroup.position);
         
         if(this.stuckTimer > 2.0) {
             // Reverse
-            force = maxForce;
-            steer = -steer;
+            this.vehicle.applyEngineForce(engineForce, 2);
+            this.vehicle.applyEngineForce(engineForce, 3);
+            this.vehicle.setSteeringValue(maxSteer, 0);
+            this.vehicle.setSteeringValue(maxSteer, 1);
             if(this.stuckTimer > 4.0) {
-                // Reset to waypoint
-                this.targetWaypoint = botWaypoints[Math.floor(Math.random()*botWaypoints.length)];
+                this.targetWp = waypoints[Math.floor(Math.random()*waypoints.length)];
                 this.stuckTimer = 0;
+            }
+            return;
+        }
+
+        // 2. Target selection
+        let targetPos = null;
+        
+        // If has weapon, hunt player/others
+        if(this.weapon) {
+            let nearest = null;
+            let minDist = 1000;
+            karts.forEach(k => {
+                if(k !== this && k.hp > 0) {
+                    let d = this.meshGroup.position.distanceTo(k.meshGroup.position);
+                    if(d < minDist) { minDist = d; nearest = k; }
+                }
+            });
+            if(nearest) {
+                targetPos = nearest.meshGroup.position;
+                // Shoot if looking at target
+                let dirToTarget = new THREE.Vector3().subVectors(targetPos, this.meshGroup.position).normalize();
+                let forward = new THREE.Vector3(0,0,1).applyQuaternion(this.meshGroup.quaternion).normalize();
+                if(forward.dot(dirToTarget) > 0.8 && minDist < 100) {
+                    this.fireWeapon();
+                }
             }
         }
         
-        // Apply
+        // If no target, go to waypoint
+        if(!targetPos) {
+            if(!this.targetWp) this.targetWp = waypoints[Math.floor(Math.random()*waypoints.length)];
+            targetPos = new THREE.Vector3(this.targetWp.x, this.meshGroup.position.y, this.targetWp.z);
+            if(this.meshGroup.position.distanceTo(targetPos) < 10) {
+                this.targetWp = waypoints[Math.floor(Math.random()*waypoints.length)]; // Pick new
+            }
+        }
+        
+        // 3. Steering Calculation
+        let localTarget = this.body.vectorToLocalFrame(new CANNON.Vec3(targetPos.x, targetPos.y, targetPos.z));
+        let steer = Math.atan2(localTarget.x, localTarget.z);
+        steer = Math.max(-maxSteer, Math.min(maxSteer, steer));
+        
         this.vehicle.setSteeringValue(steer, 0);
         this.vehicle.setSteeringValue(steer, 1);
-        this.vehicle.applyEngineForce(force, 2);
-        this.vehicle.applyEngineForce(force, 3);
-    }
-    
-    equipWeapon(weapData) {
-        this.weapon = weapData;
-        if(this.isPlayer) updateWeaponUI();
+        this.vehicle.applyEngineForce(-engineForce, 2);
+        this.vehicle.applyEngineForce(-engineForce, 3);
     }
     
     fireWeapon() {
-        if(!this.weapon || this.cooldown > 0) return;
+        if(!this.weapon || this.fireCooldown > 0 || this.ammo <= 0) return;
         
-        this.cooldown = this.weapon.fireRate;
-        this.weapon.ammo--;
+        this.fireCooldown = this.weapon.rate;
+        this.ammo--;
         
-        AudioSys.playShoot();
-        
-        const forward = new THREE.Vector3(0,0,1).applyQuaternion(this.mesh.quaternion).normalize();
-        const spawnPos = this.mesh.position.clone().add(forward.clone().multiplyScalar(4));
+        let forward = new THREE.Vector3(0,0,1).applyQuaternion(this.meshGroup.quaternion).normalize();
+        let spawnPos = this.meshGroup.position.clone().add(forward.clone().multiplyScalar(4));
         spawnPos.y += 1;
         
-        if(this.weapon.type === "SPREAD") {
-            for(let i=-1; i<=1; i++) {
-                this.spawnProjectile(spawnPos, forward.clone().applyAxisAngle(new THREE.Vector3(0,1,0), i*0.2));
-            }
-        } else if(this.weapon.type === "TRAP") {
-            const back = forward.clone().multiplyScalar(-1);
-            const trapPos = this.mesh.position.clone().add(back.clone().multiplyScalar(4));
-            trapPos.y -= 0.5;
-            this.spawnProjectile(trapPos, new THREE.Vector3(0,0,0));
-        } else {
-            this.spawnProjectile(spawnPos, forward);
+        if(this.weapon.type === 'trap') {
+            // Drop behind
+            let back = forward.clone().multiplyScalar(-1);
+            spawnPos = this.meshGroup.position.clone().add(back.multiplyScalar(4));
+            forward = new THREE.Vector3(0,0,0);
         }
         
-        if(this.weapon.ammo <= 0) {
-            this.weapon = null;
+        // Add random spread
+        if(this.weapon.spread) {
+            forward.x += (Math.random() - 0.5) * this.weapon.spread;
+            forward.y += (Math.random() - 0.5) * this.weapon.spread;
+            forward.z += (Math.random() - 0.5) * this.weapon.spread;
+            forward.normalize();
         }
         
-        if(this.isPlayer) updateWeaponUI();
+        const proj = new Projectile(this, this.weapon, spawnPos, forward);
+        activeProjectiles.push(proj);
+        
+        if(this.ammo <= 0) this.weapon = null;
     }
     
-    spawnProjectile(pos, dir) {
-        const p = new Projectile(this, this.weapon, pos, dir);
-        projectiles.push(p);
-    }
-    
-    takeDamage(amt, attacker, weaponName) {
+    takeDamage(amt, attacker) {
         if(this.hp <= 0) return;
         this.hp -= amt;
         
-        if(this.isPlayer) updatePlayerStatsUI();
+        spawnExplosion(this.meshGroup.position.x, this.meshGroup.position.y+1, this.meshGroup.position.z, 0xff0000);
         
-        // Damage Effect
-        createExplosion(this.mesh.position.x, this.mesh.position.y+1, this.mesh.position.z, 0xff0000, 5);
+        if(this.isPlayer) updateHUD();
         
-        if(this.hp <= 0) {
-            this.die(attacker, weaponName);
-        }
+        if(this.hp <= 0) this.die(attacker);
     }
     
-    die(attacker, weaponName) {
+    die(attacker) {
         this.deaths++;
         if(attacker && attacker !== this) {
             attacker.kills++;
-            pushKillfeed(attacker.name, this.name, weaponName);
-            if(attacker.isPlayer) {
-                updatePlayerStatsUI();
-            }
+            showKill(attacker.name, this.name);
         } else {
-            pushKillfeed("ENVIRONMENT", this.name, "WATER");
+            showKill("WORLD", this.name);
         }
         
-        // Death Explosion
-        createExplosion(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z, 0xffaa00, 50);
-        AudioSys.playExplosion();
+        spawnExplosion(this.meshGroup.position.x, this.meshGroup.position.y, this.meshGroup.position.z, 0xffaa00);
         
-        // Hide
-        this.mesh.visible = false;
-        this.chassisBody.position.set(0, -100, 0); // Move out of way
+        this.meshGroup.visible = false;
+        this.body.position.set(0, -100, 0); // Move away
         this.vehicle.setBrake(1000, 0);
+        this.vehicle.setBrake(1000, 1);
+        this.vehicle.setBrake(1000, 2);
+        this.vehicle.setBrake(1000, 3);
         
-        // Respawn Timer
         setTimeout(() => this.respawn(), 3000);
     }
     
     respawn() {
-        if(gameState !== "PLAYING") return;
+        if(!gameActive) return;
         this.hp = this.maxHp;
         this.weapon = null;
-        this.mesh.visible = true;
+        this.ammo = 0;
+        this.meshGroup.visible = true;
         
-        // Pick random waypoint to spawn
-        const wp = botWaypoints[Math.floor(Math.random() * botWaypoints.length)];
-        this.chassisBody.position.set(wp.x, 10, wp.z);
-        this.chassisBody.velocity.set(0,0,0);
-        this.chassisBody.angularVelocity.set(0,0,0);
+        let wp = waypoints[Math.floor(Math.random() * waypoints.length)];
+        this.body.position.set(wp.x, 20, wp.z);
+        this.body.velocity.set(0,0,0);
+        this.body.angularVelocity.set(0,0,0);
         
-        // Reset rotation
         const q = new CANNON.Quaternion();
         q.setFromAxisAngle(new CANNON.Vec3(0,1,0), Math.random()*Math.PI*2);
-        this.chassisBody.quaternion.copy(q);
+        this.body.quaternion.copy(q);
         
-        if(this.isPlayer) {
-            updatePlayerStatsUI();
-            updateWeaponUI();
-        }
+        if(this.isPlayer) updateHUD();
     }
 }
 
-// ==========================================
-// 10. PROJECTILE ENTITY
-// ==========================================
+// ==========================================================================
+// PROJECTILES
+// ==========================================================================
 class Projectile {
     constructor(owner, weaponData, pos, dir) {
         this.owner = owner;
-        this.weaponData = weaponData;
-        this.life = weaponData.life;
+        this.data = weaponData;
+        this.life = 5.0;
+        this.pos = pos.clone();
+        this.dir = dir.clone();
         
-        // Visual
-        let geo, mat;
-        if(weaponData.type === "EXPLOSIVE" || weaponData.type === "TRAP") {
-            geo = new THREE.SphereGeometry(1.5, 8, 8);
-        } else {
-            geo = new THREE.BoxGeometry(0.8, 0.8, 3.0);
-        }
-        mat = new THREE.MeshBasicMaterial({ color: weaponData.color });
-        this.mesh = new THREE.Mesh(geo, mat);
+        let geo = new THREE.SphereGeometry(1, 8, 8);
+        if(weaponData.type === 'bullet') geo = new THREE.BoxGeometry(0.5, 0.5, 2);
+        
+        this.mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: weaponData.color }));
         this.mesh.position.copy(pos);
         if(dir.lengthSq() > 0) this.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1), dir);
         scene.add(this.mesh);
-        
-        // Physics
-        let shape = new CANNON.Sphere(weaponData.type === "TRAP" ? 1.5 : 0.8);
-        this.body = new CANNON.Body({
-            mass: weaponData.type === "TRAP" ? 10 : 1,
-            material: physicsMaterial
-        });
-        this.body.addShape(shape);
-        this.body.position.copy(pos);
-        
-        if(weaponData.type !== "TRAP") {
-            this.body.velocity.set(dir.x * weaponData.speed, dir.y * weaponData.speed, dir.z * weaponData.speed);
-        }
-        
-        if(weaponData.bounciness > 0) {
-            this.body.linearDamping = 0.0;
-        } else {
-            this.body.linearDamping = 0.0;
-        }
-        
-        // Ignore gravity for bullets
-        if(weaponData.gravity === 0) {
-            this.body.type = CANNON.Body.KINEMATIC; // Manual move
-            this.isKinematicProj = true;
-            this.dir = dir;
-        } else {
-            world.addBody(this.body);
-            this.isKinematicProj = false;
-        }
-        
-        this.hit = false;
     }
     
     update(dt) {
         this.life -= dt;
         
-        if(this.isKinematicProj) {
-            // Manual integration
-            this.body.position.x += this.dir.x * this.weaponData.speed * dt;
-            this.body.position.y += this.dir.y * this.weaponData.speed * dt;
-            this.body.position.z += this.dir.z * this.weaponData.speed * dt;
-        }
+        // Manual integration for speed
+        this.pos.addScaledVector(this.dir, this.data.speed * dt);
+        this.mesh.position.copy(this.pos);
         
-        this.mesh.position.copy(this.body.position);
-        if(!this.isKinematicProj) this.mesh.quaternion.copy(this.body.quaternion);
-        
-        // Collision Detection
-        let hitKart = null;
-        for(let i=0; i<karts.length; i++) {
-            let k = karts[i];
-            if(k === this.owner && this.life > this.weaponData.life - 0.2) continue; // Ignore self initially
-            if(k.hp <= 0) continue;
-            
-            let d = this.mesh.position.distanceTo(k.mesh.position);
-            if(d < 4.0) { // Hit radius
-                hitKart = k;
-                break;
+        // Collision
+        let hit = false;
+        karts.forEach(k => {
+            if(k !== this.owner && k.hp > 0) {
+                if(this.pos.distanceTo(k.meshGroup.position) < 4.0) {
+                    hit = true;
+                }
             }
+        });
+        
+        if(this.pos.y < -2 || this.life <= 0 || hit) {
+            this.explode();
+            return false;
         }
-        
-        // Hit Environment (simplified bounds check for kinematic)
-        let hitEnv = false;
-        if(this.mesh.position.y < -2) hitEnv = true;
-        if(Math.abs(this.mesh.position.x) > 150 || Math.abs(this.mesh.position.z) > 150) hitEnv = true;
-        
-        if(hitKart || hitEnv || this.life <= 0) {
-            this.explode(hitKart);
-            return false; // mark for removal
-        }
-        
         return true;
     }
     
-    explode(directHitKart) {
-        if(this.hit) return;
-        this.hit = true;
+    explode() {
+        spawnExplosion(this.pos.x, this.pos.y, this.pos.z, this.data.color);
         
-        if(this.weaponData.blastRadius) {
-            // Area Damage
-            createExplosion(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z, this.weaponData.color, 30);
-            AudioSys.playExplosion();
-            
-            for(let i=0; i<karts.length; i++) {
-                let k = karts[i];
-                if(k.hp <= 0) continue;
-                let d = this.mesh.position.distanceTo(k.mesh.position);
-                if(d <= this.weaponData.blastRadius) {
-                    let dmg = this.weaponData.damage * (1 - (d/this.weaponData.blastRadius));
-                    k.takeDamage(dmg, this.owner, this.weaponData.name);
-                    // Knockback
-                    let kbDir = new THREE.Vector3().subVectors(k.mesh.position, this.mesh.position).normalize();
-                    k.chassisBody.velocity.x += kbDir.x * 20;
-                    k.chassisBody.velocity.y += 15;
-                    k.chassisBody.velocity.z += kbDir.z * 20;
-                }
-            }
-        } else {
-            // Single Target
-            createExplosion(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z, this.weaponData.color, 10);
-            if(directHitKart) {
-                directHitKart.takeDamage(this.weaponData.damage, this.owner, this.weaponData.name);
-            }
-        }
-        
-        scene.remove(this.mesh);
-        if(!this.isKinematicProj) world.removeBody(this.body);
-    }
-}
-
-// ==========================================
-// 11. GAME LOGIC & UI MANAGEMENT
-// ==========================================
-function updateUI(dt) {
-    // Timer
-    const min = Math.floor(timeRemaining / 60);
-    const sec = Math.floor(timeRemaining % 60);
-    const tv = document.getElementById('timerValue');
-    tv.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-    if(timeRemaining <= 10) tv.classList.add('warning');
-    else tv.classList.remove('warning');
-    
-    // Weapon boxes collision with players (done here for convenience)
-    weaponBoxes.forEach(box => {
-        if(box.active) {
+        if(this.data.radius) {
             karts.forEach(k => {
-                if(k.hp > 0 && k.mesh.position.distanceTo(box.mesh.position) < 4) {
-                    const weap = box.collect();
-                    if(weap) k.equipWeapon(weap);
+                if(k.hp <= 0) return;
+                let d = this.pos.distanceTo(k.meshGroup.position);
+                if(d <= this.data.radius) {
+                    let dmg = this.data.dmg * (1 - (d/this.data.radius));
+                    k.takeDamage(dmg, this.owner);
+                    // Knockback
+                    let dir = new THREE.Vector3().subVectors(k.meshGroup.position, this.pos).normalize();
+                    k.body.velocity.x += dir.x * 30;
+                    k.body.velocity.y += 20;
+                    k.body.velocity.z += dir.z * 30;
+                }
+            });
+        } else {
+            // Direct hit check
+            karts.forEach(k => {
+                if(k !== this.owner && k.hp > 0 && this.pos.distanceTo(k.meshGroup.position) < 5.0) {
+                    k.takeDamage(this.data.dmg, this.owner);
                 }
             });
         }
-    });
-}
-
-function updatePlayerStatsUI() {
-    if(!playerKart) return;
-    const p = Math.max(0, (playerKart.hp / playerKart.maxHp) * 100);
-    document.getElementById('healthBarFill').style.width = `${p}%`;
-    document.getElementById('healthText').innerText = `${Math.ceil(playerKart.hp)} / ${playerKart.maxHp}`;
-    document.getElementById('scoreValue').innerText = playerKart.kills;
-}
-
-function updateWeaponUI() {
-    if(!playerKart) return;
-    const wc = document.getElementById('weaponContainer');
-    const wi = document.getElementById('weaponIcon');
-    const wn = document.getElementById('weaponName');
-    const ac = document.getElementById('ammoContainer');
-    
-    if(playerKart.weapon) {
-        wc.style.borderColor = playerKart.weapon.iconColor;
-        wi.innerText = playerKart.weapon.name.charAt(0);
-        wi.style.color = playerKart.weapon.iconColor;
-        wn.innerText = playerKart.weapon.name;
         
-        ac.innerHTML = '';
-        for(let i=0; i<playerKart.weapon.ammo; i++) {
-            let pip = document.createElement('div');
-            pip.className = 'ammo-pip filled';
-            pip.style.background = playerKart.weapon.iconColor;
-            ac.appendChild(pip);
-        }
-    } else {
-        wc.style.borderColor = '#ffffff';
-        wi.innerText = '?';
-        wi.style.color = '#ffffff';
-        wn.innerText = 'NO WEAPON';
-        ac.innerHTML = '';
+        scene.remove(this.mesh);
+        this.mesh.geometry.dispose();
+        this.mesh.material.dispose();
     }
 }
 
-function pushKillfeed(killer, victim, weapon) {
+// ==========================================================================
+// UI MANAGERS
+// ==========================================================================
+function updateHUD() {
+    if(!myKart) return;
+    
+    // Health Bar
+    const hpPercent = Math.max(0, (myKart.hp / myKart.maxHp) * 100);
+    document.getElementById('healthBarFill').style.width = hpPercent + '%';
+    
+    // Time
+    const min = Math.floor(timeRemaining / 60);
+    const sec = Math.floor(timeRemaining % 60);
+    document.getElementById('timerValue').innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+}
+
+function showKill(killer, victim) {
     const kf = document.getElementById('killfeed');
-    const entry = document.createElement('div');
-    entry.className = 'killfeed-entry';
-    entry.innerHTML = `<span class="killer-name">${killer}</span> 💥 <span class="victim-name">${victim}</span> <br><span class="weapon-used">[${weapon}]</span>`;
-    kf.appendChild(entry);
-    setTimeout(() => { if(entry.parentNode) entry.parentNode.removeChild(entry); }, 4000);
+    const el = document.createElement('div');
+    el.style.background = 'rgba(0,0,0,0.5)';
+    el.style.color = 'white';
+    el.style.padding = '5px 15px';
+    el.style.borderRadius = '5px';
+    el.style.marginBottom = '5px';
+    el.style.borderLeft = '4px solid #ff4400';
+    el.innerHTML = `<b>${killer}</b> eliminated <b>${victim}</b>`;
+    kf.appendChild(el);
+    setTimeout(() => { if(el.parentNode) el.parentNode.removeChild(el); }, 3000);
 }
 
-function updateLeaderboardUI() {
-    const lbBody = document.getElementById('leaderboardBody');
-    lbBody.innerHTML = '';
-    
-    // Sort karts by kills
-    let sorted = [...karts].sort((a, b) => b.kills - a.kills || a.deaths - b.deaths);
-    
-    sorted.forEach((k, idx) => {
-        const row = document.createElement('div');
-        row.className = `leaderboard-row ${k.isPlayer ? 'player-row' : ''}`;
-        row.innerHTML = `
-            <div class="lb-rank">${idx + 1}</div>
-            <div class="lb-name" style="color:${'#'+k.color.toString(16).padStart(6,'0')}">${k.name}</div>
-            <div class="lb-kills">${k.kills}</div>
-            <div class="lb-deaths">${k.deaths}</div>
-        `;
-        lbBody.appendChild(row);
-    });
-    return sorted;
-}
-
-// ==========================================
-// 12. MAIN GAME LOOP
-// ==========================================
+// ==========================================================================
+// GAME LOOP & STATE
+// ==========================================================================
 function startGame() {
-    document.getElementById('startScreen').style.display = 'none';
-    document.getElementById('endScreen').style.display = 'none';
+    const nameInput = document.getElementById('playerNameInput').value.trim();
+    if(nameInput) localPlayerName = nameInput;
+    
+    document.getElementById('mainMenu').style.display = 'none';
     document.getElementById('uiLayer').style.display = 'block';
     
-    AudioSys.init();
+    initGraphicsAndPhysics();
+    generateWaterParkMap();
+    initWeaponBoxes();
     
-    // Cleanup old entities if restarting
-    karts.forEach(k => { scene.remove(k.mesh); world.removeBody(k.chassisBody); k.wheelBodies.forEach(wb => world.removeBody(wb)); });
-    projectiles.forEach(p => { scene.remove(p.mesh); if(!p.isKinematicProj) world.removeBody(p.body); });
-    particles.forEach(p => p.destroy());
+    // Create Players
+    myKart = new Kart(true, localPlayerName, 0, 50, 0x000000); // Black kart based on image
+    karts.push(myKart);
     
-    karts = [];
-    projectiles = [];
-    particles = [];
+    // Create Bots
+    for(let i=0; i<8; i++) {
+        let wp = waypoints[Math.floor(Math.random()*waypoints.length)];
+        let color = Math.random() * 0xffffff;
+        karts.push(new Kart(false, botRoster[i], wp.x, wp.z, color));
+    }
+    
+    gameActive = true;
     timeRemaining = GAME_DURATION;
+    lastFrameTime = performance.now();
     
-    // Instantiate Player
-    playerKart = new Kart(true, "YOU", 0, 20, 0x00ff00);
-    karts.push(playerKart);
-    
-    // Instantiate Bots
-    for(let i=0; i<botNames.length; i++) {
-        let wp = botWaypoints[Math.floor(Math.random() * botWaypoints.length)];
-        let botColor = Math.random() * 0xffffff;
-        karts.push(new Kart(false, botNames[i], wp.x + (Math.random()*10-5), wp.z + (Math.random()*10-5), botColor));
-    }
-    
-    updatePlayerStatsUI();
-    updateWeaponUI();
-    
-    lastTime = performance.now();
-    gameState = "PLAYING";
+    requestAnimationFrame(gameLoop);
 }
 
-function endGame() {
-    gameState = "END";
-    document.getElementById('uiLayer').style.display = 'none';
-    document.getElementById('endScreen').style.display = 'flex';
-    
-    const sorted = updateLeaderboardUI(); // Reuses logic to sort
-    let resultHTML = '';
-    for(let i=0; i<Math.min(5, sorted.length); i++) {
-        let k = sorted[i];
-        resultHTML += `<div style="color:white; font-size:24px; margin:10px 0;">#${i+1} - ${k.name} - Kills: <span style="color:red">${k.kills}</span></div>`;
-    }
-    document.getElementById('finalScoreboard').innerHTML = resultHTML;
-    
-    if(sorted[0].isPlayer) {
-        document.getElementById('endTitle').innerText = "VICTORY!";
-        document.getElementById('endTitle').style.color = "#00ff00";
-    } else {
-        document.getElementById('endTitle').innerText = "DEFEAT";
-        document.getElementById('endTitle').style.color = "#ff0000";
-    }
-}
-
-function animate() {
-    requestAnimationFrame(animate);
+function gameLoop() {
+    if(!gameActive) return;
+    requestAnimationFrame(gameLoop);
     
     const now = performance.now();
-    let dt = (now - lastTime) / 1000;
-    lastTime = now;
-    if(dt > 0.1) dt = 0.1; // Cap dt
+    let dt = (now - lastFrameTime) / 1000;
+    lastFrameTime = now;
+    if(dt > 0.1) dt = 0.1; // Cap delta
     
-    if(gameState === "PLAYING") {
-        // Physics Step
-        world.step(TIMESTEP, dt, 3);
-        
-        // Update Karts
-        karts.forEach(k => k.update(dt));
-        
-        // Update Weapons Boxes
-        weaponBoxes.forEach(b => b.update(dt));
-        
-        // Update Projectiles
-        for(let i = projectiles.length - 1; i >= 0; i--) {
-            if(!projectiles[i].update(dt)) {
-                projectiles.splice(i, 1);
-            }
+    // Timer
+    timeRemaining -= dt;
+    if(timeRemaining <= 0) {
+        alert("GAME OVER! Check console for scores.");
+        console.table(karts.map(k => ({Name: k.name, Kills: k.kills, Deaths: k.deaths})).sort((a,b)=>b.Kills-a.Kills));
+        location.reload();
+        return;
+    }
+    
+    // Physics
+    world.step(1/60, dt, 3);
+    
+    // Entities
+    karts.forEach(k => k.update(dt));
+    weaponPickups.forEach(w => w.update(dt));
+    
+    for(let i=activeProjectiles.length-1; i>=0; i--) {
+        if(!activeProjectiles[i].update(dt)) {
+            activeProjectiles.splice(i, 1);
         }
-        
-        // Update Particles
-        for(let i = particles.length - 1; i >= 0; i--) {
-            if(!particles[i].update(dt)) {
-                particles[i].destroy();
-                particles.splice(i, 1);
-            }
+    }
+    
+    for(let i=particleSystems.length-1; i>=0; i--) {
+        if(!particleSystems[i].update(dt)) {
+            particleSystems[i].dispose();
+            particleSystems.splice(i, 1);
         }
-        
-        // Camera Follow Player
-        if(playerKart && playerKart.hp > 0) {
-            const relativeCameraOffset = new THREE.Vector3(0, 8, -15);
-            const cameraOffset = relativeCameraOffset.applyMatrix4(playerKart.bodyMesh.matrixWorld);
-            camera.position.lerp(cameraOffset, 0.1);
-            const lookAtPos = playerKart.mesh.position.clone().add(new THREE.Vector3(0, 2, 0));
-            camera.lookAt(lookAtPos);
-        } else {
-            // Spectator mode if dead
-            camera.position.y += 10 * dt;
-            camera.lookAt(0,0,0);
-        }
-        
-        // Time logic
-        timeRemaining -= dt;
-        updateUI(dt);
-        if(timeRemaining <= 0) {
-            endGame();
-        }
-    } else if (gameState === "MENU") {
-        // Slow pan around empty map
-        camera.position.x = Math.sin(now * 0.0001) * 100;
-        camera.position.z = Math.cos(now * 0.0001) * 100;
-        camera.position.y = 50;
-        camera.lookAt(0,0,0);
+    }
+    
+    updateHUD();
+    
+    // Camera follow (Smooth lerp)
+    if(myKart && myKart.hp > 0) {
+        const camOffset = new THREE.Vector3(0, 10, -20);
+        const targetPos = camOffset.applyMatrix4(myKart.bodyMesh.matrixWorld);
+        camera.position.lerp(targetPos, 0.1);
+        camera.lookAt(myKart.meshGroup.position.clone().add(new THREE.Vector3(0,2,0)));
     }
     
     renderer.render(scene, camera);
 }
 
-// ==========================================
-// 13. BOOTSTRAP
-// ==========================================
-document.getElementById('startBtn').addEventListener('click', startGame);
-document.getElementById('restartBtn').addEventListener('click', startGame);
-
-initEngine();
-buildWaterParkMap();
-initWeaponBoxes();
-animate();
+// BIND PLAY BUTTON
+document.getElementById('playBtn').addEventListener('click', startGame);
 
 </script>
 </body>
