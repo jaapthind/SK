@@ -1159,7 +1159,7 @@ class Kart {
     }
     
     handleAIInput(dt) {
-        const engineForce = 3000;
+        const engineForce = 6000;
         const maxSteer = 0.5;
         
         // Unstuck Routine
@@ -1207,7 +1207,7 @@ class Kart {
             if(nearestBox) targetPos = nearestBox.mesh.position;
             else {
                 if(!this.targetNode) this.targetNode = AI_WAYPOINTS[Math.floor(Math.random()*AI_WAYPOINTS.length)];
-                targetPos = new THREE.Vector3(this.targetNode.x, this.mesh.position.y, this.targetNode.z);
+                targetPos = new THREE.Vector3(this.targetNode.x, 0.5, this.targetNode.z);
                 if(this.mesh.position.distanceTo(targetPos) < 20) this.targetNode = AI_WAYPOINTS[Math.floor(Math.random()*AI_WAYPOINTS.length)];
             }
         }
