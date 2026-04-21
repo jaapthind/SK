@@ -627,36 +627,35 @@ function buildSmashIsland() {
     const cw = MAP_DATA.curbWidth;
 
    // Ultra-Thin Seamless Ramps (Gentle 15-degree incline)
-    createStaticBox(0, -0.5, 155, 40, 0.5, 30, Materials.asphalt, 0.26, 0);   // South
-    createStaticBox(0, -0.5, -155, 40, 0.5, 30, Materials.asphalt, -0.26, 0); // North
-    createStaticBox(155, -0.5, 0, 30, 0.5, 40, Materials.asphalt, 0, -0.26);  // East
-    createStaticBox(-155, -0.5, 0, 30, 0.5, 40, Materials.asphalt, 0, 0.26);   // West
+  
 
     // Center Intersection (around lava)
-    createStaticBox(0, 0, 0, r*4, 2, r*4, Materials.asphalt);
+    createStaticBox(0, -0.9, 0, r*4, 0.2, r*4, Materials.asphalt);
 
     // North Road
-    createStaticBox(0, 0, -r*3, r, 2, r*4, Materials.asphalt);
+    createStaticBox(0, -0.9, -r*3, r, 0.2, r*4, Materials.asphalt);
     // South Road
-    createStaticBox(0, 0, r*3, r, 2, r*4, Materials.asphalt);
+    createStaticBox(0, -0.9, r*3, r, 0.2, r*4, Materials.asphalt);
     // East Road
-    createStaticBox(r*3, 0, 0, r*4, 2, r, Materials.asphalt);
+    createStaticBox(r*3, -0.9, 0, r*4, 0.2, r, Materials.asphalt);
     // West Road
-    createStaticBox(-r*3, 0, 0, r*4, 2, r, Materials.asphalt);
+    createStaticBox(-r*3, -0.9, 0, r*4, 0.2, r, Materials.asphalt);
 
     // Corners (Connecting the roads in a big loop)
     // NE Corner
-    createStaticBox(r*4, 0, -r*4, r*3, 2, r, Materials.asphalt);
-    createStaticBox(r*4, 0, -r*4, r, 2, r*3, Materials.asphalt);
+   // Corners (Connecting the roads in a big loop)
+    // NE Corner
+    createStaticBox(r*4, -0.9, -r*4, r*3, 0.2, r, Materials.asphalt);
+    createStaticBox(r*4, -0.9, -r*4, r, 0.2, r*3, Materials.asphalt);
     // NW Corner
-    createStaticBox(-r*4, 0, -r*4, r*3, 2, r, Materials.asphalt);
-    createStaticBox(-r*4, 0, -r*4, r, 2, r*3, Materials.asphalt);
+    createStaticBox(-r*4, -0.9, -r*4, r*3, 0.2, r, Materials.asphalt);
+    createStaticBox(-r*4, -0.9, -r*4, r, 0.2, r*3, Materials.asphalt);
     // SE Corner
-    createStaticBox(r*4, 0, r*4, r*3, 2, r, Materials.asphalt);
-    createStaticBox(r*4, 0, r*4, r, 2, r*3, Materials.asphalt);
+    createStaticBox(r*4, -0.9, r*4, r*3, 0.2, r, Materials.asphalt);
+    createStaticBox(r*4, -0.9, r*4, r, 0.2, r*3, Materials.asphalt);
     // SW Corner
-    createStaticBox(-r*4, 0, r*4, r*3, 2, r, Materials.asphalt);
-    createStaticBox(-r*4, 0, r*4, r, 2, r*3, Materials.asphalt);
+    createStaticBox(-r*4, -0.9, r*4, r*3, 0.2, r, Materials.asphalt);
+    createStaticBox(-r*4, -0.9, r*4, r, 0.2, r*3, Materials.asphalt);
 
     // 4. Red/White Curbs (Around the lava pit)
     Textures.curb.repeat.set(10, 1);
