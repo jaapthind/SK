@@ -626,10 +626,11 @@ function buildSmashIsland() {
     const r = MAP_DATA.roadWidth;
     const cw = MAP_DATA.curbWidth;
 
-    createStaticBox(0, -1.5, 120, 40, 2, 30, Materials.asphalt, 0.4, 0);   // South Ramp
-    createStaticBox(0, -1.5, -120, 40, 2, 30, Materials.asphalt, -0.4, 0); // North Ramp
-    createStaticBox(120, -1.5, 0, 30, 2, 40, Materials.asphalt, 0, -0.4);  // East Ramp
-    createStaticBox(-120, -1.5, 0, 30, 2, 40, Materials.asphalt, 0, 0.4);
+   // Ultra-Thin Seamless Ramps (Gentle 15-degree incline)
+    createStaticBox(0, -0.5, 155, 40, 0.5, 30, Materials.asphalt, 0.26, 0);   // South
+    createStaticBox(0, -0.5, -155, 40, 0.5, 30, Materials.asphalt, -0.26, 0); // North
+    createStaticBox(155, -0.5, 0, 30, 0.5, 40, Materials.asphalt, 0, -0.26);  // East
+    createStaticBox(-155, -0.5, 0, 30, 0.5, 40, Materials.asphalt, 0, 0.26);   // West
 
     // Center Intersection (around lava)
     createStaticBox(0, 0, 0, r*4, 2, r*4, Materials.asphalt);
