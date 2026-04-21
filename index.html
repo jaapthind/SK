@@ -1208,7 +1208,7 @@ class Kart {
             else {
                 if(!this.targetNode) this.targetNode = AI_WAYPOINTS[Math.floor(Math.random()*AI_WAYPOINTS.length)];
                 targetPos = new THREE.Vector3(this.targetNode.x, 0.5, this.targetNode.z);
-                if(this.mesh.position.distanceTo(targetPos) < 20) this.targetNode = AI_WAYPOINTS[Math.floor(Math.random()*AI_WAYPOINTS.length)];
+                if(this.mesh.position.distanceTo(targetPos) < 40) this.targetNode = AI_WAYPOINTS[Math.floor(Math.random()*AI_WAYPOINTS.length)];
             }
         }
         
